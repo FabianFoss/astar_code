@@ -192,49 +192,27 @@ class Map_Obj():
         else:
             map[goal_pos[0]][goal_pos[1]] = ' G '
 
-    def show_map(self, map=None):
-        """
-        A function used to draw the map as an image and show it.
-        :param map: map to use
-        :return: nothing.
-        """
-        # If a map is provided, set the goal and start positions
-        if map is not None:
-            self.set_start_pos_str_marker(self.start_pos, map)
-            self.set_goal_pos_str_marker(self.goal_pos, map)
-        # If no map is provided, use string_map
-        else:
-            map = self.str_map
-
-        # Define width and height of image
-        width = map.shape[1]
-        height = map.shape[0]
-        # Define scale of the image
+    """ Changed the show_map method to take in a 2D integer array """
+    
+    @staticmethod
+    def show_map(board):
+        #Starts with defining scale, height, width and a image
         scale = 20
-        # Create an all-yellow image
-        image = Image.new('RGB', (width * scale, height * scale),
-                          (255, 255, 0))
-        # Load image
-        pixels = image.load()
+        height = len(board)
+        width = len(board[0])
+        image = Image.new('RGB', (width * scale, height * scale), (255, 255, 0))
+        pixels = image.load() #Loads the image
 
-        # Define what colors to give to different values of the string map (undefined values will remain yellow, this is
-        # how the yellow path is painted)
-        colors = {
-            ' # ': (211, 33, 45),
-            ' . ': (215, 215, 215),
-            ' , ': (166, 166, 166),
-            ' : ': (96, 96, 96),
-            ' ; ': (36, 36, 36),
-            ' S ': (255, 0, 255),
-            ' G ': (0, 128, 255)
-        }
-        # Go through image and set pixel color for every position
+        #Defines the colours for the different values at the board
+        colors = {-1: (255, 0, 0), 1: (215, 215, 215), 2: (166, 166, 166), 3: (96, 96, 96),
+                4: (36, 36, 36), 5: (255, 0, 255), 6: (0, 128, 255), 7: (0, 200, 0)}
+        #Set the colour of every pixle on the image 
         for y in range(height):
             for x in range(width):
-                if map[y][x] not in colors: continue
+                if board[y][x] not in colors:
+                    continue
                 for i in range(scale):
                     for j in range(scale):
-                        pixels[x * scale + i,
-                               y * scale + j] = colors[map[y][x]]
-        # Show image
+                        pixels[x * scale + i, y * scale + j] = colors[board[y][x]]
         image.show()
+
